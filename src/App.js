@@ -2,7 +2,8 @@ import './App.css';
 import Cliente from './componentes/Cliente';
 import Cuenta from './componentes/Cuenta';
 import Transaccion from './componentes/Transaccion';
-import GraficoConsunmo from './componentes/GraficoConsunmo';
+import GraficoDepositos from './componentes/GraficoDepositos';
+import GraficoRetiros from './componentes/GraficoRetiros';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <Cliente/>
        <Cuenta/>
        <Transaccion/>
-       <GraficoConsunmo/>
+       <GraficoDepositos/>
+       <GraficoRetiros/>
     </div>
   );
 }

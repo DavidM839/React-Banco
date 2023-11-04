@@ -68,7 +68,7 @@ class Transaccion extends Component {
         this.setState({
             tipoModal: 'actualizar',
             form: {
-            id: transaccion.id_cuenta,
+            id: transaccion.id,
             id_cuenta: transaccion.id_cuenta,
             tipo: transaccion.tipo,
             monto: transaccion.monto, 
