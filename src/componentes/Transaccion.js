@@ -158,6 +158,11 @@ class Transaccion extends Component {
                 <button className="btn btn-success"onClick={() => { this.setState({ form: null, tipoModal: 'insertar' }); this.modalInsertar();  }}>
                     Agregar transaccion
                 </button>
+
+                <Link to={`/historialTransacciones/`}>
+                                    <button className="btn btn-info">Ver Historial</button>
+                                </Link>
+                                
                 <table className="table mt-3">
                     <thead>
                         <tr>
@@ -183,9 +188,6 @@ class Transaccion extends Component {
                                     <td>{transaccion.monto}</td>
                                     <td>{transaccion.fecha}</td> 
                                     <td>
-                                    <Link to={`/historialTransacciones/`}>
-                                    <button className="btn btn-info">Ver Historial</button>
-                                </Link>
                                         <button className="btn btn-primary" onClick={() => this.seleccionarTransaccionParaEditar(transaccion)}> <FontAwesomeIcon icon={faEdit} /></button>
                                         {"   "}
                                         <button className="btn btn-danger" onClick={() => { this.seleccionarTransacciones(transaccion); this.setState({ modalEliminar: true }) }}><FontAwesomeIcon icon={faTrashAlt} /></button>
