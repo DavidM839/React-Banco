@@ -18,7 +18,6 @@ class Cliente extends Component {
             Nombre: '',
             Apellido: '',
             numero_cuenta: '', 
-            contrasena: '', 
         },
         clientesSeleccionados: null,
     };
@@ -71,7 +70,7 @@ class Cliente extends Component {
                 Nombre: cliente.Nombre,
                 Apellido: cliente.Apellido,
                 numero_cuenta: cliente.numero_cuenta, 
-                contrasena: cliente.contrasena, 
+                
             }
         });
     }
@@ -175,8 +174,6 @@ class Cliente extends Component {
                             <label htmlFor="numero_cuenta">Numero de cuenta</label>
                             <input className="form-control" type="text" name="numero_cuenta" onChange={this.handleChange} value={clientesSeleccionados ? clientesSeleccionados.numero_cuenta : ''} />
                             <br />
-                            <label htmlFor="contrasena">Contraseña</label> 
-                            <input className="form-control" type="text" name="contrasena" onChange={this.handleChange} value={clientesSeleccionados ? clientesSeleccionados.contrasena : ''} />
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -203,8 +200,6 @@ class Cliente extends Component {
                             <label htmlFor="numero_cuenta">Numero de cuenta</label>
                             <input className="form-control" type="text" name="numero_cuenta" onChange={this.handleChange} value={form ? form.numero_cuenta : ''} />
                             <br />
-                            <label htmlFor="contrasena">Contraseña</label> 
-                            <input className="form-control" type="text" name="contrasena" onChange={this.handleChange} value={form ? form.contrasena : ''} /> 
                         </div>
                     </ModalBody>
                     <ModalFooter>

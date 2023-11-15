@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 const url = "http://127.0.0.1:8000/api/transacciones/"; 
 
@@ -16,6 +17,7 @@ class Transaccion extends Component {
         form: {
             id:'',
             id_cuenta: '',
+            id_cliente:'',
             tipo: '',
             monto: '', 
             fecha: '', 
@@ -70,6 +72,7 @@ class Transaccion extends Component {
             form: {
             id: transaccion.id,
             id_cuenta: transaccion.id_cuenta,
+            id_cliente: transaccion.id_cliente,
             tipo: transaccion.tipo,
             monto: transaccion.monto, 
             fecha: transaccion.fecha, 
@@ -112,8 +115,33 @@ class Transaccion extends Component {
                 [e.target.name]: e.target.value,
             },
         });
-        console.log(this.state.transaccionesSeleccionados);
+    
+        if (e.target.name === 'id_cuenta') {
+            axios.get(`http://127.0.0.1:8000/api/cuentas/${e.target.value}`)
+                .then(response => {
+                    const { id_cliente, cliente: { nombre, apellido } } = response.data;
+                    this.setState(prevState => ({
+                        form: {
+                            ...prevState.form,
+                            id_cliente,
+                            nombre,
+                            apellido
+                        },
+                        transaccionesSeleccionados: {
+                            ...prevState.transaccionesSeleccionados,
+                            id_cliente,
+                            nombre,
+                            apellido
+                        }
+                    }));
+                })
+                .catch(error => {
+                    console.log(error.message);
+                    // Manejar errores si la cuenta no es encontrada
+                });
+        }
     }
+    
 
     render() {
         const { form, transaccionesSeleccionados } = this.state;
@@ -121,7 +149,7 @@ class Transaccion extends Component {
             backgroundColor: 'gray',
             padding: '50px',
         };
-
+        const opcionesTipoTransaccion = ['deposito', 'retiro'];
         return (
             <div style={styles}>
                 <br />
@@ -134,6 +162,9 @@ class Transaccion extends Component {
                     <thead>
                         <tr>
                             <th>ID Cuenta</th>
+                            <th>ID Cliente</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
                             <th>Tipo de Transaccion</th>
                             <th>Monto</th> 
                             <th>Fecha</th>
@@ -145,10 +176,16 @@ class Transaccion extends Component {
                             return (
                                 <tr key={transaccion.id}>
                                     <td>{transaccion.id_cuenta}</td>
+                                    <td>{transaccion.id_cliente}</td>
+                                    <td>{transaccion.cuenta.cliente.nombre}</td>
+                                    <td>{transaccion.cuenta.cliente.apellido}</td>
                                     <td>{transaccion.tipo}</td>
                                     <td>{transaccion.monto}</td>
                                     <td>{transaccion.fecha}</td> 
                                     <td>
+                                    <Link to={`/historialTransacciones/`}>
+                                    <button className="btn btn-info">Ver Historial</button>
+                                </Link>
                                         <button className="btn btn-primary" onClick={() => this.seleccionarTransaccionParaEditar(transaccion)}> <FontAwesomeIcon icon={faEdit} /></button>
                                         {"   "}
                                         <button className="btn btn-danger" onClick={() => { this.seleccionarTransacciones(transaccion); this.setState({ modalEliminar: true }) }}><FontAwesomeIcon icon={faTrashAlt} /></button>
@@ -170,8 +207,22 @@ class Transaccion extends Component {
                             <label htmlFor="id_cuenta">ID Cuenta</label>
                             <input className="form-control" type="text" name="id_cuenta" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.id_cuenta : ''} />
                             <br />
+                            <label htmlFor="id_cliente">ID Cliente</label>
+                            <input className="form-control" type="text" name="id_cliente" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.id_cliente : ''} />
+                            <br /> 
+                            <label htmlFor="nombre">Nombre</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.nombre : ''} />
+                            <br />
+                            <label htmlFor="apellido">Apellido</label>
+                            <input className="form-control" type="text" name="apellido" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.apellido : ''} />
+                            <br />    
                             <label htmlFor="tipo">Tipo</label>
-                            <input className="form-control" type="text" name="tipo" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.tipo : ''} />
+                            <select className="form-control" name="tipo" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.tipo : ''}>
+                                <option value="">Seleccionar</option>
+                                {opcionesTipoTransaccion.map((tipo, index) => (
+                                    <option key={index} value={tipo}>{tipo}</option>
+                                ))}
+                            </select>
                             <br />
                             <label htmlFor="monto">Monto</label>
                             <input className="form-control" type="text" name="monto" onChange={this.handleChange} value={transaccionesSeleccionados ? transaccionesSeleccionados.monto : ''} />
@@ -198,8 +249,21 @@ class Transaccion extends Component {
                             <label htmlFor="id_cuenta">ID Cuenta</label>
                             <input className="form-control" type="text" name="id_cuenta" onChange={this.handleChange}  value={form ? form.id_cuenta : ''} />
                             <br />
+                            <label htmlFor="id_cliente">ID Cliente</label>
+                            <input className="form-control" type="text" name="id_cliente" onChange={this.handleChange}  value={form ? form.id_cliente : ''} />
+                            <br />
+                            <label htmlFor="nombre">Nombre</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.handleChange}  value={form ? form.nombre : ''} />
+                            <br />
+                            <label htmlFor="apellido">Apellido</label>
+                            <input className="form-control" type="text" name="apellido" onChange={this.handleChange} value={form ? form.apellido : ''} />
+                            <br />
                             <label htmlFor="tipo">Tipo</label>
-                            <input className="form-control" type="text" name="tipo" onChange={this.handleChange} value={form ? form.tipo : ''} />
+            <select className="form-control" name="tipo" onChange={this.handleChange} value={form ? form.tipo : ''}>
+                <option value="">Seleccionar</option>
+                <option value="Depósito">Depósito</option>
+                <option value="Retiro">Retiro</option>
+            </select>
                             <br />
                             <label htmlFor="monto">Monto</label>
                             <input className="form-control" type="text" name="monto" onChange={this.handleChange} value={form ? form.monto : ''} />

@@ -107,9 +107,30 @@ class Cuenta extends Component {
                 [e.target.name]: e.target.value,
             },
         });
-        console.log(this.state.cuentasSeleccionados);
-    }
 
+        if (e.target.name === 'id_cliente') {
+            axios.get(`http://127.0.0.1:8000/api/clientes/${e.target.value}`)
+                .then(response => {
+                    const { nombre, apellido } = response.data;
+                    this.setState(prevState => ({
+                        form: {
+                            ...prevState.form,
+                            nombre,
+                            apellido
+                        },
+                        cuentasSeleccionados: {
+                            ...prevState.cuentasSeleccionados,
+                            nombre,
+                            apellido
+                        }
+                    }));
+                })
+                .catch(error => {
+                    console.log(error.message);
+                    // Manejar errores si el cliente no es encontrado
+                });
+        }
+    }
     render() {
         const { form, cuentasSeleccionados } = this.state;
         const styles = {
@@ -129,6 +150,8 @@ class Cuenta extends Component {
                     <thead>
                         <tr>
                             <th>ID Cliente</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
                             <th>Saldo Actual</th>
                             <th>Acciones</th>
                         </tr>
@@ -138,6 +161,8 @@ class Cuenta extends Component {
                             return (
                                 <tr key={cuenta.id}>
                                     <td>{cuenta.id_cliente}</td>
+                                    <td>{cuenta.cliente.nombre}</td>
+                                    <td>{cuenta.cliente.apellido}</td>
                                     <td>{cuenta.saldo}</td>
                                     <td>
                                         <button className="btn btn-primary" onClick={() => this.seleccionarCuentaParaEditar(cuenta)}> <FontAwesomeIcon icon={faEdit} /></button>
@@ -160,7 +185,13 @@ class Cuenta extends Component {
                             <br />
                             <label htmlFor="id_cliente">ID Cliente</label>
                             <input className="form-control" type="text" name="id_cliente" onChange={this.handleChange} value={cuentasSeleccionados ? cuentasSeleccionados.id_cliente : ''} />
-                            <br />                        
+                            <br /> 
+                            <label htmlFor="nombre">Nombre</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.handleChange} value={cuentasSeleccionados ? cuentasSeleccionados.nombre : ''} />
+                            <br />
+                            <label htmlFor="apellido">Apellido</label>
+                            <input className="form-control" type="text" name="apellido" onChange={this.handleChange} value={cuentasSeleccionados ? cuentasSeleccionados.apellido : ''} />
+                            <br />                       
                             <label htmlFor="saldo">Saldo</label> 
                             <input className="form-control" type="text" name="saldo" onChange={this.handleChange} value={cuentasSeleccionados ? cuentasSeleccionados.saldo : ''} />
                         </div>
@@ -182,6 +213,12 @@ class Cuenta extends Component {
                             <br />
                             <label htmlFor="id_cliente">ID Cliente</label>
                             <input className="form-control" type="text" name="id_cliente" onChange={this.handleChange}  value={form ? form.id_cliente : ''} />
+                            <br />
+                            <label htmlFor="nombre">Nombre</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.handleChange}  value={form ? form.nombre : ''} />
+                            <br />
+                            <label htmlFor="apellido">Apellido</label>
+                            <input className="form-control" type="text" name="apellido" onChange={this.handleChange} value={form ? form.apellido : ''} />
                             <br />
                             <label htmlFor="saldo">Saldo</label> 
                             <input className="form-control" type="text" name="saldo" onChange={this.handleChange} value={form ? form.saldo : ''} /> 
